@@ -4,38 +4,30 @@
  * @var \App\Model\Entity\Question $question
  */
 ?>
-<nav class="large-3 medium-4 columns" id="actions-sidebar">
-
 <div class="questions view large-9 medium-8 columns content">
-    <h3><?= h($question->title) ?></h3>
-    <table class="vertical-table">
-        <tr>
-            <th scope="row"><?= __('User') ?></th>
-            <td><?= $question->has('user') ? $this->Html->link($question->user->id, ['controller' => 'Users', 'action' => 'view', $question->user->id]) : '' ?></td>
-        </tr>
-        <tr>
-            <th scope="row"><?= __('Tag') ?></th>
-            <td><?= $question->has('tag') ? $this->Html->link($question->tag->title, ['controller' => 'Tags', 'action' => 'view', $question->tag->id]) : '' ?></td>
-        </tr>
-        <tr>
-            <th scope="row"><?= __('Title') ?></th>
-            <td><?= h($question->title) ?></td>
-        </tr>
-        <tr>
-            <th scope="row"><?= __('Id') ?></th>
-            <td><?= $this->Number->format($question->id) ?></td>
-        </tr>
-        <tr>
-            <th scope="row"><?= __('Created At') ?></th>
-            <td><?= h($question->created_at) ?></td>
-        </tr>
-        <tr>
-            <th scope="row"><?= __('Updated At') ?></th>
-            <td><?= h($question->updated_at) ?></td>
-        </tr>
-    </table>
-    <div class="row">
-        <h4><?= __('Content') ?></h4>
-        <?= $this->Text->autoParagraph(h($question->content)); ?>
+    <h1 class="brand-header">質問詳細</h1>
+    <div class="main-wrap">
+        <div class="panel panel-success">
+            <div class="panel-heading">
+                <p><?= $question->has('user') ? h($question->user->name) : '' ?>さんの質問&nbsp;
+                    <?= $question->has('tag') ? h($question->tag->title) : '' ?> &nbsp;
+                    <?= h($question->created_at) ?>
+                </p>
+            </div>
+            <div class="table-responsive">
+                <table class="table table-striped table-bordered">
+                    <tbody>
+                        <tr>
+                            <th class="table-column"><?= __('Title') ?></th>
+                            <td class="td-text"><?= h($question->title) ?></td>
+                        </tr>
+                        <tr>
+                            <th class="table-column"><?= __('Content') ?></th>
+                            <td class="td-text"><?= $this->Text->autoParagraph(h($question->content)); ?></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
     </div>
 </div>
