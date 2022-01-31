@@ -37,7 +37,9 @@ class QuestionsController extends AppController
      */
     public function view($id = null)
     {
-        $question = $this->Questions->find('questionById', ['id' => $id]);
+        $question = $this->Questions->get($id, [
+            'contain' => ['Users', 'Tags']
+        ]);
 
         $this->set('question', $question);
     }
@@ -53,13 +55,7 @@ class QuestionsController extends AppController
         if ($this->request->is('post')) {
             $requestData = $this->request->getData();
             $requestData['user_id'] = $this->Auth->user('id');
-            $question = $this->Questions->patchEntity($question, $requestData);
-            if ($this->Questions->save($question)) {
-                $this->Flash->success(__('The question has been saved.'));
-
-                return $this->redirect(['action' => 'index']);
-            }
-            $this->Flash->error(__('The question could not be saved. Please, try again.'));
+            $this->create($question, $requestData);
         }
         $tags = $this->Questions->Tags->find('list', ['limit' => 200]);
         $this->set(compact('question', 'tags'));
@@ -78,17 +74,10 @@ class QuestionsController extends AppController
             'contain' => [],
         ]);
         if ($this->request->is(['patch', 'post', 'put'])) {
-            $question = $this->Questions->patchEntity($question, $this->request->getData());
-            if ($this->Questions->save($question)) {
-                $this->Flash->success(__('The question has been saved.'));
-
-                return $this->redirect(['action' => 'index']);
-            }
-            $this->Flash->error(__('The question could not be saved. Please, try again.'));
+            $this->update($question, $this->request->getData());
         }
-        $users = $this->Questions->Users->find('list', ['limit' => 200]);
         $tags = $this->Questions->Tags->find('list', ['limit' => 200]);
-        $this->set(compact('question', 'users', 'tags'));
+        $this->set(compact('question', 'tags'));
     }
 
     /**
@@ -103,9 +92,9 @@ class QuestionsController extends AppController
         $this->request->allowMethod(['post', 'delete']);
         $question = $this->Questions->get($id);
         if ($this->Questions->delete($question)) {
-            $this->Flash->success(__('The question has been deleted.'));
+            $this->Flash->success(__('削除しました。'));
         } else {
-            $this->Flash->error(__('The question could not be deleted. Please, try again.'));
+            $this->Flash->error(__('削除に失敗しました。'));
         }
 
         return $this->redirect(['action' => 'index']);
@@ -122,5 +111,27 @@ class QuestionsController extends AppController
         $questions = $this->paginate($query);
 
         $this->set(compact('questions'));
+    }
+
+    private function create($questionEntity, $inputs)
+    {
+        $question = $this->Questions->patchEntity($questionEntity, $inputs);
+        if ($this->Questions->save($question)) {
+            $this->Flash->success(__('作成しました。'));
+
+            return $this->redirect(['action' => 'index']);
+        }
+        $this->Flash->error(__('作成できませんでした。'));
+    }
+
+    private function update($question, $inputs)
+    {
+        $question = $this->Questions->patchEntity($question, $inputs);
+        if ($this->Questions->save($question)) {
+            $this->Flash->success(__('更新しました。'));
+
+            return $this->redirect(['action' => 'index']);
+        }
+        $this->Flash->error(__('更新できませんでした。'));
     }
 }
