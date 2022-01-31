@@ -27,8 +27,10 @@ $cakeDescription = 'Gizlog';
     </title>
     <?= $this->Html->meta('icon') ?>
 
+    <?= $this->Html->css('bootstrap.min.css') ?>
     <?= $this->Html->css('base.css') ?>
     <?= $this->Html->css('style.css') ?>
+    <?= $this->Html->css('custom.css') ?>
 
     <?= $this->fetch('meta') ?>
     <?= $this->fetch('css') ?>
@@ -48,7 +50,7 @@ $cakeDescription = 'Gizlog';
         </div>
     </nav>
     <?= $this->Flash->render() ?>
-    <div class="container clearfix">
+    <!-- <div class="container clearfix"> -->
       <nav class="large-3 medium-4 columns" id="actions-sidebar">
       <ul class="side-nav">
           <li class="heading"><?= __('Actions') ?></li>
