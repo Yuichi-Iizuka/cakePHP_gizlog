@@ -21,7 +21,6 @@
                 <td><?= $question->has('tag') ? h($question->tag->title): '' ?></td>
                 <td><?= h($question->title) ?></td>
                 <td class="actions">
-                    <?= $this->Html->link(__('View'), ['action' => 'view', $question->id]) ?>
                     <?= $this->Html->link(__('Edit'), ['action' => 'edit', $question->id]) ?>
                     <?= $this->Form->postLink(__('Delete'), ['action' => 'delete', $question->id], ['confirm' => __('Are you sure you want to delete # {0}?', $question->id)]) ?>
                 </td>
