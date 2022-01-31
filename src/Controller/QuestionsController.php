@@ -19,7 +19,9 @@ class QuestionsController extends AppController
      */
     public function index()
     {
-        $query = $this->Questions->find('all');
+        $query = $this->Questions->find('all', [
+            'contain' => ['Users', 'Tags']
+        ]);
         
         $questions = $this->paginate($query);
 
@@ -49,7 +51,9 @@ class QuestionsController extends AppController
     {
         $question = $this->Questions->newEntity();
         if ($this->request->is('post')) {
-            $question = $this->Questions->patchEntity($question, $this->request->getData());
+            $requestData = $this->request->getData();
+            $requestData['user_id'] = $this->Auth->user('id');
+            $question = $this->Questions->patchEntity($question, $requestData);
             if ($this->Questions->save($question)) {
                 $this->Flash->success(__('The question has been saved.'));
 
@@ -57,9 +61,8 @@ class QuestionsController extends AppController
             }
             $this->Flash->error(__('The question could not be saved. Please, try again.'));
         }
-        $users = $this->Questions->Users->find('list', ['limit' => 200]);
         $tags = $this->Questions->Tags->find('list', ['limit' => 200]);
-        $this->set(compact('question', 'users', 'tags'));
+        $this->set(compact('question', 'tags'));
     }
 
     /**
@@ -106,5 +109,18 @@ class QuestionsController extends AppController
         }
 
         return $this->redirect(['action' => 'index']);
+    }
+
+    public function mypage()
+    {
+        $userId = $this->Auth->user('id');
+        $query = $this->Questions->find('all', [
+            'contain' => ['Tags'],
+            'conditions' => ['Questions.user_id' => $userId]
+        ]);
+
+        $questions = $this->paginate($query);
+
+        $this->set(compact('questions'));
     }
 }
